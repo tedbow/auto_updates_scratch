@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Drupal\upper\Form;
+namespace Drupal\auto_updates\Form;
 
 
 use Drupal\Core\Form\FormBase;
@@ -28,7 +28,9 @@ class UpdaterForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $version = $form_state->getValue('update_version');
     $this->messenger()->addMessage("would have updated to: " . $form_state->getValue('update_version'));
-    \Drupal::service('upper.updater')->update($version);
+    /** @var \Drupal\auto_updates\Updater $updater */
+    $updater = \Drupal::service('auto_updates.updater');
+    $updater->update($version);
   }
 
 }
