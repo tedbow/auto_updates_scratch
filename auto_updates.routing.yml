@@ -1,0 +1,7 @@
+upper.page:
+  path: '/upper'
+  defaults:
+    _form: '\Drupal\upper\Form\UpdaterForm'
+    _title: 'Update it!'
+  requirements:
+      _permission: 'administer software updates'
