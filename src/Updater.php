@@ -90,15 +90,29 @@ class Updater {
   }
 
   /**
-   * @param string $root_path
+   * @param string $target_path
    * @param string $temp_update_directory
    */
-  private function transferUpdate(string $root_path, string $temp_update_directory) {
+  private function transferUpdate(string $target_path, string $temp_update_directory) {
     $filetranser = $this->getFileTransfer();
-    $filetranser->removeDirectory("$root_path/vendor");
-    $filetranser->copyDirectory("$temp_update_directory/vendor", "$root_path/vendor");
-    $filetranser->removeDirectory("$root_path/web/core");
-    $filetranser->copyDirectory("$temp_update_directory/web/core", "$root_path/web/core");
+    $filetranser->removeFile("$target_path/composer.json");
+    $filetranser->removeFile("$target_path/composer.lock");
+    $filetranser->copyFile("$temp_update_directory/composer.json", "$target_path/composer.json");
+    $filetranser->copyFile("$temp_update_directory/composer.lock", "$target_path/composer.lock");
+    $filetranser->removeDirectory("$target_path/vendor");
+    $filetranser->copyDirectory("$temp_update_directory/vendor", "$target_path/vendor");
+    $filetranser->removeDirectory("$target_path/web/core");
+    $filetranser->copyDirectory("$temp_update_directory/web/core", "$target_path/web/core");
+    foreach (glob("$temp_update_directory/web/core/*") as $source_file) {
+      if (is_file($source_file)) {
+        $base_file_name = basename($source_file);
+        $destination_file = "$target_path/web/core/$base_file_name";
+        if (file_exists($destination_file)) {
+          $filetranser->removeFile($destination_file);
+        }
+        $filetranser->copyFile($source_file, $destination_file);
+      }
+    }
     $filetranser->removeDirectory($temp_update_directory);
   }
 
