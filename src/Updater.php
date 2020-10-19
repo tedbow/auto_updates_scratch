@@ -114,6 +114,7 @@ class Updater {
       }
     }
     $filetranser->removeDirectory($temp_update_directory);
+    \Drupal::messenger()->addMessage("UPDATE transfered");
   }
 
   /**
