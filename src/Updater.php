@@ -36,12 +36,14 @@ class Updater {
     $output = [];
     \Drupal::messenger()->addMessage("Trying to update to : $version");
     exec("composer require drupal/core-recommended:$version --with-dependencies", $output, $return);
-    if ($return !== 0) {
-      \Drupal::messenger()->addError("return $return");
-    }
     foreach ($output as $item) {
       \Drupal::messenger()->addMessage($item);
     }
+    if ($return !== 0) {
+      \Drupal::messenger()->addError("return $return");
+      return;
+    }
+
     // If we made it this far validate update
     if ($this->isUpdateValid($this->getRootPath(), $temp_update_directory)) {
       $this->transferUpdate($this->getRootPath(), $temp_update_directory);
